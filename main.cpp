@@ -1,190 +1,230 @@
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
-class Date {
+template <class T>
+class Matrix {
 private:
-    int day;
-    int month;
-    int year;
+    int rows;
+    int cols;
+    T** data;
 
 public:
-    Date() {
-        day = 1;
-        month = 1;
-        year = 2000;
+    Matrix() {
+        rows = 0;
+        cols = 0;
+        data = nullptr;
     }
 
-    Date(int d, int m, int y) {
-        day = d;
-        month = m;
-        year = y;
+    Matrix(int r, int c) {
+        rows = r;
+        cols = c;
+
+        data = new T * [rows];
+        for (int i = 0; i < rows; i++) {
+            data[i] = new T[cols];
+        }
     }
 
-    // copy
-    Date(const Date& other) {
-        day = other.day;
-        month = other.month;
-        year = other.year;
+    Matrix(const Matrix& other) {
+        rows = other.rows;
+        cols = other.cols;
+
+        data = new T * [rows];
+        for (int i = 0; i < rows; i++) {
+            data[i] = new T[cols];
+            for (int j = 0; j < cols; j++) {
+                data[i][j] = other.data[i][j];
+            }
+        }
     }
 
-    // =
-    Date& operator=(const Date& other) {
+    Matrix& operator=(const Matrix& other) {
         if (this != &other) {
-            day = other.day;
-            month = other.month;
-            year = other.year;
-        }
-        return *this;
-    }
+            clearMemory();
 
-    // increase day by 1
-    void nextDay() {
-        day++;
-        if (day > 30) {
-            day = 1;
-            month++;
-            if (month > 12) {
-                month = 1;
-                year++;
-            }
-        }
-    }
+            rows = other.rows;
+            cols = other.cols;
 
-    // ++ prefix
-    Date operator++() {
-        nextDay();
-        return *this;
-    }
-
-    // ++ postfix
-    Date operator++(int) {
-        Date temp = *this;
-        nextDay();
-        return temp;
-    }
-
-    // -- prefix
-    Date operator--() {
-        day--;
-        if (day < 1) {
-            day = 30;
-            month--;
-            if (month < 1) {
-                month = 12;
-                year--;
+            data = new T * [rows];
+            for (int i = 0; i < rows; i++) {
+                data[i] = new T[cols];
+                for (int j = 0; j < cols; j++) {
+                    data[i][j] = other.data[i][j];
+                }
             }
         }
         return *this;
     }
 
-    // -- postfix
-    Date operator--(int) {
-        Date temp = *this;
-        --(*this);
+    ~Matrix() {
+        clearMemory();
+    }
+
+    void clearMemory() {
+        if (data != nullptr) {
+            for (int i = 0; i < rows; i++) {
+                delete[] data[i];
+            }
+            delete[] data;
+            data = nullptr;
+        }
+        rows = 0;
+        cols = 0;
+    }
+
+    void input() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                cout << "Enter element [" << i << "][" << j << "]: ";
+                cin >> data[i][j];
+            }
+        }
+    }
+
+    void fillRandom() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                data[i][j] = rand() % 10 + 1;
+            }
+        }
+    }
+
+    void print() const {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                cout << data[i][j] << "\t";
+            }
+            cout << endl;
+        }
+    }
+
+    T findMin() const {
+        T min = data[0][0];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (data[i][j] < min) {
+                    min = data[i][j];
+                }
+            }
+        }
+
+        return min;
+    }
+
+    T findMax() const {
+        T max = data[0][0];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (data[i][j] > max) {
+                    max = data[i][j];
+                }
+            }
+        }
+
+        return max;
+    }
+
+    Matrix operator+(const Matrix& other) const {
+        Matrix temp(rows, cols);
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                temp.data[i][j] = data[i][j] + other.data[i][j];
+            }
+        }
+
         return temp;
     }
 
-    // +=
-    Date operator+=(int days) {
-        for (int i = 0; i < days; i++) {
-            nextDay();
+    Matrix operator-(const Matrix& other) const {
+        Matrix temp(rows, cols);
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                temp.data[i][j] = data[i][j] - other.data[i][j];
+            }
         }
-        return *this;
+
+        return temp;
     }
 
-    // -=
-    Date operator-=(int days) {
-        for (int i = 0; i < days; i++) {
-            --(*this);
+    Matrix operator*(const Matrix& other) const {
+        Matrix temp(rows, cols);
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                temp.data[i][j] = data[i][j] * other.data[i][j];
+            }
         }
-        return *this;
+
+        return temp;
     }
 
-    friend bool operator==(const Date& a, const Date& b);
-    friend bool operator!=(const Date& a, const Date& b);
-    friend bool operator>(const Date& a, const Date& b);
-    friend bool operator<(const Date& a, const Date& b);
+    Matrix operator/(const Matrix& other) const {
+        Matrix temp(rows, cols);
 
-    friend ostream& operator<<(ostream& out, const Date& d);
-    friend istream& operator>>(istream& in, Date& d);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                temp.data[i][j] = data[i][j] / other.data[i][j];
+            }
+        }
+
+        return temp;
+    }
 };
 
-bool operator==(const Date& a, const Date& b) {
-    return (a.day == b.day && a.month == b.month && a.year == b.year);
-}
-
-bool operator!=(const Date& a, const Date& b) {
-    return !(a == b);
-}
-
-bool operator>(const Date& a, const Date& b) {
-    if (a.year > b.year) return true;
-    if (a.year == b.year && a.month > b.month) return true;
-    if (a.year == b.year && a.month == b.month && a.day > b.day) return true;
-    return false;
-}
-
-bool operator<(const Date& a, const Date& b) {
-    if (a.year < b.year) return true;
-    if (a.year == b.year && a.month < b.month) return true;
-    if (a.year == b.year && a.month == b.month && a.day < b.day) return true;
-    return false;
-}
-
-ostream& operator<<(ostream& out, const Date& d) {
-    out << d.day << "." << d.month << "." << d.year;
-    return out;
-}
-
-istream& operator>>(istream& in, Date& d) {
-    cout << "Enter day month year: ";
-    in >> d.day >> d.month >> d.year;
-    return in;
-}
-
-
-// ===== MAIN =====
-
 int main() {
+    srand(time(0));
 
-    Date d1, d2;
+    int rows, cols;
 
-    cin >> d1;
-    cin >> d2;
+    cout << "Enter number of rows: ";
+    cin >> rows;
 
-    cout << "Date 1: " << d1 << endl;
-    cout << "Date 2: " << d2 << endl;
+    cout << "Enter number of columns: ";
+    cin >> cols;
 
-    cout << endl;
-
-    // ++
-    d1++;
-    cout << "After ++: " << d1 << endl;
-
-    // --
-    d1--;
-    cout << "After --: " << d1 << endl;
-
-    // +=
-    d1 += 5;
-    cout << "After +=5: " << d1 << endl;
-
-    // -=
-    d1 -= 3;
-    cout << "After -=3: " << d1 << endl;
+    Matrix<int> m1(rows, cols);
+    Matrix<int> m2(rows, cols);
 
     cout << endl;
+    cout << "Matrix 1 random fill:" << endl;
+    m1.fillRandom();
+    m1.print();
 
-    // compare
-    if (d1 == d2)
-        cout << "Dates are equal" << endl;
-    else
-        cout << "Dates are not equal" << endl;
+    cout << endl;
+    cout << "Matrix 2 random fill:" << endl;
+    m2.fillRandom();
+    m2.print();
 
-    if (d1 > d2)
-        cout << "Date1 is greater" << endl;
-    else if (d1 < d2)
-        cout << "Date1 is smaller" << endl;
+    Matrix<int> sum = m1 + m2;
+    Matrix<int> sub = m1 - m2;
+    Matrix<int> mul = m1 * m2;
+    Matrix<int> div = m1 / m2;
+
+    cout << endl;
+    cout << "Sum matrix:" << endl;
+    sum.print();
+
+    cout << endl;
+    cout << "Subtraction matrix:" << endl;
+    sub.print();
+
+    cout << endl;
+    cout << "Multiplication matrix:" << endl;
+    mul.print();
+
+    cout << endl;
+    cout << "Division matrix:" << endl;
+    div.print();
+
+    cout << endl;
+    cout << "Min element in Matrix 1: " << m1.findMin() << endl;
+    cout << "Max element in Matrix 1: " << m1.findMax() << endl;
 
     return 0;
 }
