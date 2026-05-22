@@ -1,24 +1,50 @@
 ﻿using System;
 
-class Program
+// INTERFACE
+
+public interface IValidator
 {
-    static void Main()
+    bool Validate();
+}
+
+
+// PASSWORD VALIDATOR
+
+public class PasswordValidator : IValidator
+{
+    private string password;
+
+    public PasswordValidator(string password)
     {
-        Console.WriteLine("TASK 5");
-        Console.WriteLine();
+        this.password = password;
+    }
 
-        PasswordValidator password =
-            new PasswordValidator("mypassword123");
+    public bool Validate()
+    {
+        if (password.Length >= 8)
+            return true;
 
-        Console.WriteLine("Password valid: " +
-            password.Validate());
+        return false;
+    }
+}
 
-        Console.WriteLine();
 
-        EmailValidator email =
-            new EmailValidator("test@gmail.com");
+// EMAIL VALIDATOR
 
-        Console.WriteLine("Email valid: " +
-            email.Validate());
+public class EmailValidator : IValidator
+{
+    private string email;
+
+    public EmailValidator(string email)
+    {
+        this.email = email;
+    }
+
+    public bool Validate()
+    {
+        if (email.Contains("@") && email.Contains("."))
+            return true;
+
+        return false;
     }
 }
