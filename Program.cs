@@ -1,12 +1,9 @@
-﻿using System;
+using System;
 
 class Program
 {
     static void Main()
     {
-        Console.WriteLine("===== TASK 5 =====");
-        Console.WriteLine();
-
         // PASSWORD
 
         Console.Write("Enter password: ");
