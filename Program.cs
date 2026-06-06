@@ -1,141 +1,68 @@
 ﻿using System;
-
-class Play : IDisposable
-{
-    private string _title;
-    private string _author;
-    private string _genre;
-    private int _year;
-
-    private bool _disposed = false;
-
-    public Play(string title, string author, string genre, int year)
-    {
-        _title = title;
-        _author = author;
-        _genre = genre;
-        _year = year;
-
-        Console.WriteLine($"[Constructor] Play '{_title}' created.");
-    }
-
-    public string Title
-    {
-        get => _title;
-        set => _title = value;
-    }
-
-    public string Author
-    {
-        get => _author;
-        set => _author = value;
-    }
-
-    public string Genre
-    {
-        get => _genre;
-        set => _genre = value;
-    }
-
-    public int Year
-    {
-        get => _year;
-        set
-        {
-            if (value < 1000 || value > DateTime.Now.Year)
-                throw new ArgumentException("Invalid year.");
-            _year = value;
-        }
-    }
-
-    public void PrintInfo()
-    {
-        Console.WriteLine($"Title:  {_title}");
-        Console.WriteLine($"Author: {_author}");
-        Console.WriteLine($"Genre:  {_genre}");
-        Console.WriteLine($"Year:   {_year}");
-    }
-
-    public override string ToString()
-    {
-        return $"'{_title}' by {_author} ({_genre}, {_year})";
-    }
-
-    ~Play()
-    {
-        Console.WriteLine($"[Destructor] Play '{_title}' is being finalized by GC.");
-        Dispose(false);
-    }
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (_disposed) return;
-
-        if (disposing)
-        {
-            Console.WriteLine($"[Dispose] Play '{_title}' disposed manually.");
-        }
-
-        _disposed = true;
-    }
-}
+using System.IO;
 
 class Program
 {
     static void Main()
     {
-        // --- Тест 1: звичайне використання ---
-        Console.WriteLine("=== Test 1: basic usage ===");
-        Play p1 = new Play("Hamlet", "William Shakespeare", "Tragedy", 1601);
-        p1.PrintInfo();
+        string filePath = "input.txt";
 
-        Console.WriteLine();
-
-        // Зміна властивостей
-        p1.Title = "Hamlet (revised)";
-        Console.WriteLine($"Updated title: {p1.Title}");
-        Console.WriteLine($"ToString: {p1}");
-
-        Console.WriteLine();
-
-        // --- Тест 2: using — автоматичний виклик Dispose ---
-        Console.WriteLine("=== Test 2: using statement (auto Dispose) ===");
-        using (Play p2 = new Play("The Cherry Orchard", "Anton Chekhov", "Comedy", 1904))
+        if (!File.Exists(filePath))
         {
-            p2.PrintInfo();
-        } // Dispose() викликається тут автоматично
+            File.WriteAllText(filePath,
+                "The quick brown fox jumps over the lazy dog.\n" +
+                "The fox was very quick and the dog was very lazy.\n" +
+                "A fox and a dog can be good friends.");
+            Console.WriteLine($"Test file '{filePath}' created.\n");
+        }
 
+        string originalText = File.ReadAllText(filePath);
+
+        Console.WriteLine("=== Original file content ===");
+        Console.WriteLine(originalText);
         Console.WriteLine();
 
-        // --- Тест 3: ручний виклик Dispose ---
-        Console.WriteLine("=== Test 3: manual Dispose ===");
-        Play p3 = new Play("Midsummer Night's Dream", "William Shakespeare", "Comedy", 1600);
-        p3.Dispose();
+        Console.Write("Enter word to search: ");
+        string searchWord = Console.ReadLine();
+
+        Console.Write("Enter word to replace with: ");
+        string replaceWord = Console.ReadLine();
+
+        if (string.IsNullOrEmpty(searchWord))
+        {
+            Console.WriteLine("Search word cannot be empty.");
+            return;
+        }
+
+        int count = 0;
+        int index = 0;
+        while ((index = originalText.IndexOf(searchWord, index, StringComparison.OrdinalIgnoreCase)) != -1)
+        {
+            count++;
+            index += searchWord.Length;
+        }
+
+        if (count == 0)
+        {
+            Console.WriteLine($"\nWord '{searchWord}' not found in the file.");
+            return;
+        }
+
+        string newText = originalText.Replace(searchWord, replaceWord, StringComparison.OrdinalIgnoreCase);
+
+        File.WriteAllText(filePath, newText);
 
         Console.WriteLine();
-
-        // --- Тест 4: робота деструктора (GC) ---
-        Console.WriteLine("=== Test 4: destructor via GC ===");
-        CreateAndForget(); // Об'єкт створюється без збереження посилання
-
-        // Примусовий збір сміття для демонстрації деструктора
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
-        Console.WriteLine("GC cycle completed.");
+        Console.WriteLine("=== Updated file content ===");
+        Console.WriteLine(newText);
 
         Console.WriteLine();
-        Console.WriteLine("=== Program finished ===");
-    }
-
-    static void CreateAndForget()
-    {
-        Play temp = new Play("Othello", "William Shakespeare", "Tragedy", 1603);
-        Console.WriteLine($"Created: {temp}");
+        Console.WriteLine("=== Statistics ===");
+        Console.WriteLine($"File:         {filePath}");
+        Console.WriteLine($"Search word:  '{searchWord}'");
+        Console.WriteLine($"Replace word: '{replaceWord}'");
+        Console.WriteLine($"Replacements: {count}");
+        Console.WriteLine($"File size before: {originalText.Length} characters");
+        Console.WriteLine($"File size after:  {newText.Length} characters");
     }
 }
