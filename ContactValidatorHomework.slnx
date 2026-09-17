@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ContactValidatorDemo/ContactValidatorDemo.csproj" />
+  <Project Path="ContactValidatorLib/ContactValidatorLib.csproj" />
+</Solution>

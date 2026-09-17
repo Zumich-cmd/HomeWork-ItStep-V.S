@@ -1,0 +1,11 @@
+C:\Users\Zumich\Documents\Codex\2026-09-15\new-chat\work\ContactValidatorHomework\ContactValidatorLib\bin\Release\net10.0\ContactValidatorLib.deps.json
+C:\Users\Zumich\Documents\Codex\2026-09-15\new-chat\work\ContactValidatorHomework\ContactValidatorLib\bin\Release\net10.0\ContactValidatorLib.dll
+C:\Users\Zumich\Documents\Codex\2026-09-15\new-chat\work\ContactValidatorHomework\ContactValidatorLib\bin\Release\net10.0\ContactValidatorLib.pdb
+C:\Users\Zumich\Documents\Codex\2026-09-15\new-chat\work\ContactValidatorHomework\ContactValidatorLib\obj\Release\net10.0\ContactValidatorLib.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Zumich\Documents\Codex\2026-09-15\new-chat\work\ContactValidatorHomework\ContactValidatorLib\obj\Release\net10.0\ContactValidatorLib.AssemblyInfoInputs.cache
+C:\Users\Zumich\Documents\Codex\2026-09-15\new-chat\work\ContactValidatorHomework\ContactValidatorLib\obj\Release\net10.0\ContactValidatorLib.AssemblyInfo.cs
+C:\Users\Zumich\Documents\Codex\2026-09-15\new-chat\work\ContactValidatorHomework\ContactValidatorLib\obj\Release\net10.0\ContactValidatorLib.csproj.CoreCompileInputs.cache
+C:\Users\Zumich\Documents\Codex\2026-09-15\new-chat\work\ContactValidatorHomework\ContactValidatorLib\obj\Release\net10.0\ContactValidatorLib.dll
+C:\Users\Zumich\Documents\Codex\2026-09-15\new-chat\work\ContactValidatorHomework\ContactValidatorLib\obj\Release\net10.0\refint\ContactValidatorLib.dll
+C:\Users\Zumich\Documents\Codex\2026-09-15\new-chat\work\ContactValidatorHomework\ContactValidatorLib\obj\Release\net10.0\ContactValidatorLib.pdb
+C:\Users\Zumich\Documents\Codex\2026-09-15\new-chat\work\ContactValidatorHomework\ContactValidatorLib\obj\Release\net10.0\ref\ContactValidatorLib.dll
